@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ContactsUploader" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#4F8EF7</item>
+        <item name="colorPrimaryVariant">#4F8EF7</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:windowBackground">#F4F6F9</item>
+    </style>
+</resources>
